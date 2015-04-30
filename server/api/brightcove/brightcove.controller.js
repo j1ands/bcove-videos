@@ -57,7 +57,13 @@ exports.index = function(req, res) {
 // Gets a single brightcove from the DB.
 exports.show = function(req, res) {
   Brightcove.getAllVideos(function(response){
-	  return res.json(response);
+	  Brightcove.recordUrl(response, function(err, success){
+		  if(err){
+			  return res.send(404, err);
+		  } else {
+			  return res.send(200, success);
+		  }
+	  });
   }, req.params.pagenum);
 };
 
