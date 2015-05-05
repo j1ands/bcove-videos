@@ -8,7 +8,7 @@ angular.module('retrievalApp')
 	function grabAllVideos(pageNum) {
 		videos.get({ pagenum: pageNum })
 	  	      .$promise.then(function(message){
-			      if(pageNum < 202){
+			      if(pageNum < 350){
 				      counter = 0;
 				      $scope.videos.message += message.message + "\n";
 			      	      grabAllVideos(pageNum+1);
@@ -28,6 +28,6 @@ angular.module('retrievalApp')
 		      });
 	}
 
-	grabAllVideos(200);
+	grabAllVideos(211);
 	
   });

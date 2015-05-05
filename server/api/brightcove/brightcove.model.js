@@ -36,7 +36,12 @@ BrightcoveSchema.statics.getAllVideos = function(cb, pageNum) {
 };
 
 BrightcoveSchema.statics.recordUrl = function(videos, cb){
-	videoLoop(0, 0, videos.items, cb);
+	if(!videos.items) {
+		cb({status:'Video error’, statusInfo: ‘error' }); 
+	} else {
+		videoLoop(0, 0, videos.items, cb);
+	}
+
 };
 	
 function renditionSort(a, b){
