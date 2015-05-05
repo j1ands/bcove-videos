@@ -14,6 +14,8 @@ var BrightcoveSchema = new Schema({
 
 BrightcoveSchema.statics.getAllVideos = function(cb, pageNum) {
 
+    console.log(process.env.BCOVE_API_KEY);
+    
 	var path = '/services/library?command=search_videos&video_fields=name%2Crenditions%2CFLVURL%2CHDSRenditions%2CWVMRenditions%2CsmoothRenditions%2CvideoFullLength&get_item_count=true&token=' + process.env.BCOVE_API_KEY;
 	path = path + '&page_number=' + pageNum;
 	var options = {
@@ -56,11 +58,16 @@ function httpLoop(n, renditions, type, vidNum, cb){
 	if(n < renditions.length){
 	      var fileName = renditions[n].url;
 	      fileName = fileName.substring(fileName.lastIndexOf("/")+1);
+          var questionPosition = fileName.indexOf("?");
+          if(questionPosition > -1) {
+              fileName = fileName.substring(0,questionPosition);
+          }   
 	      var writeStream = fs.createWriteStream(fileName);
 	      http.get(renditions[n].url, function(res){
 		      res.pipe(writeStream);
 		      writeStream.on('finish', function(){
-			      if(writeStream.bytesWritten == 269){
+			      if(writeStream.bytesWritten < 300){
+                      console.log(renditions[n].url);
 				      httpLoop(n+1, renditions, type, vidNum, cb);
 			      } else {
 				      cb(vidNum+1, 0);
@@ -113,7 +120,7 @@ function flvDown(run, full, flv, cb){
 		http.get(arguments[arguments[0]], function(res){
 			res.pipe(writeStreamF);
 			writeStreamF.on('finish', function(){
-				if(writeStreamF.bytesWritten == 269){
+				if(writeStreamF.bytesWritten < 300){
 					flvDown(run+1, full, flv, cb);
 				} else {
 					cb();
