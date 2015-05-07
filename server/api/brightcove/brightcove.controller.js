@@ -59,9 +59,9 @@ exports.show = function(req, res) {
   Brightcove.getAllVideos(function(response){
 	  Brightcove.recordUrl(response, function(err, success){
 		  if(err){
-			  return res.send(404, err);
+			  return res.status(404).send(err);
 		  } else {
-			  return res.send(200, success);
+			  return res.status(200).send(success);
 		  }
 	  });
   }, req.params.pagenum);
